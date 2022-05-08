@@ -60,10 +60,7 @@ int16_t    g_volThreshold=100;
 
 I2S_HandleTypeDef hi2s2;
 
-
-/* I2S2 init function */
-void MX_I2S2_Init(void)
-{
+void MX_I2S2_Init(void){
   hi2s2.Instance            = SPI2;
   hi2s2.Init.Mode           = I2S_MODE_MASTER_RX;
   hi2s2.Init.Standard       = I2S_STANDARD_PHILLIPS;
@@ -77,17 +74,10 @@ void MX_I2S2_Init(void)
   HAL_I2S_Init(&hi2s2);
 }
 
-
-void HAL_I2S_MspInit(I2S_HandleTypeDef* hi2s)
-{
+void HAL_I2S_MspInit(I2S_HandleTypeDef* hi2s){
 
   GPIO_InitTypeDef GPIO_InitStruct;
-  if(hi2s->Instance==SPI2)
-  {
-  /* USER CODE BEGIN SPI2_MspInit 0 */
-
-  /* USER CODE END SPI2_MspInit 0 */
-    /* Peripheral clock enable */
+  if(hi2s->Instance==SPI2)  {
     __SPI2_CLK_ENABLE();
   
     /**I2S2 GPIO Configuration    
@@ -156,20 +146,11 @@ void HAL_I2S_MspInit(I2S_HandleTypeDef* hi2s)
     /* Peripheral interrupt init*/
     HAL_NVIC_SetPriority(SPI2_IRQn, 0, 0);
     HAL_NVIC_EnableIRQ(SPI2_IRQn);
-  /* USER CODE BEGIN SPI2_MspInit 1 */
-
-  /* USER CODE END SPI2_MspInit 1 */
   }
 }
 
-void HAL_I2S_MspDeInit(I2S_HandleTypeDef* hi2s)
-{
-  if(hi2s->Instance==SPI2)
-  {
-  /* USER CODE BEGIN SPI2_MspDeInit 0 */
-
-  /* USER CODE END SPI2_MspDeInit 0 */
-    /* Peripheral clock disable */
+void HAL_I2S_MspDeInit(I2S_HandleTypeDef* hi2s){
+  if(hi2s->Instance==SPI2)  {
     __SPI2_CLK_DISABLE();
   
     /**I2S2 GPIO Configuration    
@@ -181,25 +162,17 @@ void HAL_I2S_MspDeInit(I2S_HandleTypeDef* hi2s)
     HAL_GPIO_DeInit(GPIOB, GPIO_PIN_12|GPIO_PIN_13|GPIO_PIN_14);
     HAL_GPIO_DeInit(GPIOC, GPIO_PIN_3);
 
-    /* Peripheral DMA DeInit*/
+
     HAL_DMA_DeInit(hi2s->hdmarx);
     HAL_DMA_DeInit(hi2s->hdmatx);
-
-    /* Peripheral interrupt Deinit*/
     HAL_NVIC_DisableIRQ(SPI2_IRQn);
-
   }
-  /* USER CODE BEGIN SPI2_MspDeInit 1 */
-
-  /* USER CODE END SPI2_MspDeInit 1 */
 } 
 
 /* USER CODE BEGIN 1 */
 
-void HAL_I2S_RxCpltCallback(I2S_HandleTypeDef *hi2s)
-{
-  if(SPI2==hi2s->Instance)
-  {
+void HAL_I2S_RxCpltCallback(I2S_HandleTypeDef *hi2s){
+  if(SPI2==hi2s->Instance)  {
     HAL_GPIO_TogglePin(LED1_BOARD_PORT, LED1_BOARD_PIN);
     i2sRxDone=1;
     g_dma_iteration++;
@@ -236,31 +209,17 @@ void HAL_I2S_RxCpltCallback(I2S_HandleTypeDef *hi2s)
   }
 }
 
-void HAL_I2S_TxCpltCallback(I2S_HandleTypeDef *hi2s)
-{
-  if(SPI2==hi2s->Instance)
-  {
+void HAL_I2S_TxCpltCallback(I2S_HandleTypeDef *hi2s){
+  if(SPI2==hi2s->Instance)  {
     //HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_2);
     i2sTxDone=1;
   }
 }
 
 
-void HAL_I2S_ErrorCallback(I2S_HandleTypeDef *hi2s)
-{
-  if(SPI2==hi2s->Instance)
-  {
+void HAL_I2S_ErrorCallback(I2S_HandleTypeDef *hi2s){
+  if(SPI2==hi2s->Instance)  {
     HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_3);
   }
 }
-/* USER CODE END 1 */
 
-/**
-  * @}
-  */
-
-/**
-  * @}
-  */
-
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
