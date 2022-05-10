@@ -1,46 +1,11 @@
-/**
-  ******************************************************************************
-  * File Name          : I2C.c
-  * Description        : This file provides code for the configuration
-  *                      of the I2C instances.
-  ******************************************************************************
-  *
-  * COPYRIGHT(c) 2016 STMicroelectronics
-  *
-  * Redistribution and use in source and binary forms, with or without modification,
-  * are permitted provided that the following conditions are met:
-  *   1. Redistributions of source code must retain the above copyright notice,
-  *      this list of conditions and the following disclaimer.
-  *   2. Redistributions in binary form must reproduce the above copyright notice,
-  *      this list of conditions and the following disclaimer in the documentation
-  *      and/or other materials provided with the distribution.
-  *   3. Neither the name of STMicroelectronics nor the names of its contributors
-  *      may be used to endorse or promote products derived from this software
-  *      without specific prior written permission.
-  *
-  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
-  * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-  * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-  * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
-  * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
-  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-  *
-  ******************************************************************************
-  */
 
-/* Includes ------------------------------------------------------------------*/
+
 #include "i2c.h"
 
 #include "gpio.h"
 #include "utils.h"
-/* USER CODE BEGIN 0 */
 
-
-U8 chipAddrWr=0x34;  //   0011 0100       +
+U8 chipAddrWr=0x34;  //   0011 0100      
 
 //To control the WM8731/L on the 2-wire bus the master control device must initiate
 //a data transfer by  establishing a start condition, defined by a high to low transition
@@ -50,7 +15,7 @@ U8 chipAddrWr=0x34;  //   0011 0100       +
 //consists of a 6-bit base address + a single programmable bit to select one of  two available
 //addresses for this device (see table 24). 
 
-//If the correct address is received and the R/W  bit is ‘0’, indicating a write, 
+//If the correct address is received and the R/W  bit is â€˜0â€™, indicating a write, 
 //then the WM8731/L will respond by pulling SDIN low on the next clock  pulse (ACK). 
 //The WM8731/L is a write only device and will only respond to the R/W bit indicating a  write.
 //If the address is not recognised the device will return to the idle condition and wait for a new 
@@ -151,11 +116,7 @@ U16 reg15_resetRegister      = 0x001E;
 #endif
 
 
-
-
-
-void writeCodecRegs()
-{
+void writeCodecRegs(){
   globalError=0;
   //HAL_Delay(200);
   //status = HAL_I2C_Master_Transmit_IT(&hi2c1,(uint16_t) chipAddrWr, (uint8_t*) &reg15_resetRegister, 2);
@@ -173,10 +134,7 @@ void writeCodecRegs()
     g_statusHal = HAL_I2C_Master_Transmit_IT(&hi2c1,(uint16_t) chipAddrWr, (uint8_t*) &reg0_leftLineIn, 2);
   }
   while(HAL_OK!=g_statusHal);
-  
-
-  
-  
+ 
   do
   {
     globalError=2;
@@ -184,9 +142,7 @@ void writeCodecRegs()
     g_statusHal = HAL_I2C_Master_Transmit_IT(&hi2c1,(uint16_t) chipAddrWr, (uint8_t*) &reg1_rightLineIn, 2);
   }
   while(HAL_OK!=g_statusHal);
-  
-
-  
+ 
   
   do
   {
@@ -206,9 +162,6 @@ void writeCodecRegs()
 
   }
   while(HAL_OK!=g_statusHal);
-  
-
-  
   
   do
   {
@@ -296,13 +249,11 @@ void writeCodecRegs()
 //
 //}
 
-/* USER CODE END 0 */
 
 I2C_HandleTypeDef hi2c1;
 
-/* I2C1 init function */
-void MX_I2C1_Init(void)
-{
+
+void MX_I2C1_Init(void){
   hi2c1.Instance             = I2C1;
   hi2c1.Init.ClockSpeed      = 1000;
   hi2c1.Init.DutyCycle       = I2C_DUTYCYCLE_2;
@@ -317,16 +268,10 @@ void MX_I2C1_Init(void)
 
 }
 
-void HAL_I2C_MspInit(I2C_HandleTypeDef* hi2c)
-{
-
+void HAL_I2C_MspInit(I2C_HandleTypeDef* hi2c){
   GPIO_InitTypeDef GPIO_InitStruct;
-  if(hi2c->Instance==I2C1)
-  {
-  /* USER CODE BEGIN I2C1_MspInit 0 */
-
-  /* USER CODE END I2C1_MspInit 0 */
-  
+  if(hi2c->Instance==I2C1)  {
+ 
     /**I2C1 GPIO Configuration    
     PB7     ------> I2C1_SDA
     PB8     ------> I2C1_SCL 
@@ -338,58 +283,24 @@ void HAL_I2C_MspInit(I2C_HandleTypeDef* hi2c)
     GPIO_InitStruct.Alternate = GPIO_AF4_I2C1;
     HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
-    /* Peripheral clock enable */
     __I2C1_CLK_ENABLE();
-
-    /* Peripheral interrupt init*/
     HAL_NVIC_SetPriority(I2C1_EV_IRQn, 0, 0);
     HAL_NVIC_EnableIRQ(I2C1_EV_IRQn);
     HAL_NVIC_SetPriority(I2C1_ER_IRQn, 0, 0);
     HAL_NVIC_EnableIRQ(I2C1_ER_IRQn);
-  /* USER CODE BEGIN I2C1_MspInit 1 */
-
-  /* USER CODE END I2C1_MspInit 1 */
   }
 }
 
-void HAL_I2C_MspDeInit(I2C_HandleTypeDef* hi2c)
-{
-
-  if(hi2c->Instance==I2C1)
-  {
-  /* USER CODE BEGIN I2C1_MspDeInit 0 */
-
-  /* USER CODE END I2C1_MspDeInit 0 */
-    /* Peripheral clock disable */
+void HAL_I2C_MspDeInit(I2C_HandleTypeDef* hi2c){
+  if(hi2c->Instance==I2C1)  {
     __I2C1_CLK_DISABLE();
-  
     /**I2C1 GPIO Configuration    
     PB7     ------> I2C1_SDA
     PB8     ------> I2C1_SCL 
     */
     HAL_GPIO_DeInit(GPIOB, I2C1_SDA_PB7_AF4_Pin|I2C1_SCL_PB8_AF4_Pin);
-
-    /* Peripheral interrupt Deinit*/
     HAL_NVIC_DisableIRQ(I2C1_EV_IRQn);
-
     HAL_NVIC_DisableIRQ(I2C1_ER_IRQn);
-
   }
-  /* USER CODE BEGIN I2C1_MspDeInit 1 */
-
-  /* USER CODE END I2C1_MspDeInit 1 */
 } 
 
-/* USER CODE BEGIN 1 */
-
-/* USER CODE END 1 */
-
-/**
-  * @}
-  */
-
-/**
-  * @}
-  */
-
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
